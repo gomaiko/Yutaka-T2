@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TransMem</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --border: #e2e0d8;
+    --text: #1a1917;
+    --sub: #7a7870;
+    --accent: #2d5be3;
+    --accent-light: #eef1fd;
+    --danger: #c0392b;
+    --success: #1a7a4a;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08);
+    --radius: 10px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .logo span { color: var(--accent); }
+
+  .sync-status {
+    font-size: 12px;
+    color: var(--sub);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .sync-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ccc;
+    transition: background 0.3s;
+  }
+
+  .sync-dot.ok { background: var(--success); }
+  .sync-dot.loading { background: #f0a500; animation: pulse 1s infinite; }
+  .sync-dot.error { background: var(--danger); }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* Main layout */
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px 16px 80px;
+  }
+
+  /* Add form */
+  .add-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .add-card h2 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--sub);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: 480px) {
+    .field-row { grid-template-columns: 1fr; }
+  }
+
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--sub);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .field input, .field textarea, .field select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--bg);
+    color: var(--text);
+    transition: border-color 0.15s;
+    outline: none;
+    resize: none;
+  }
+
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .note-field { grid-column: 1 / -1; }
+
+  .btn-add {
+    width: 100%;
+    padding: 11px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: opacity 0.15s;
+  }
+
+  .btn-add:hover { opacity: 0.88; }
+  .btn-add:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Search */
+  .search-bar {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .search-bar input {
+    width: 100%;
+    padding: 11px 16px 11px 40px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    box-shadow: var(--shadow);
+    transition: border-color 0.15s;
+  }
+
+  .search-bar input:focus { border-color: var(--accent); }
+
+  .search-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--sub);
+    font-size: 16px;
+  }
+
+  /* Filter tabs */
+  .filter-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .tag-filter {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--sub);
+    transition: all 0.15s;
+  }
+
+  .tag-filter.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  /* Stats */
+  .stats {
+    font-size: 12px;
+    color: var(--sub);
+    margin-bottom: 12px;
+  }
+
+  /* Entry list */
+  .entry-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .entry-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+
+  .entry-langs {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .lang-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--accent-light);
+    color: var(--accent);
+    min-width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .entry-text {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--text);
+  }
+
+  .entry-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: 8px 0;
+  }
+
+  .entry-translation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .lang-badge.tl {
+    background: #edf7f1;
+    color: var(--success);
+  }
+
+  .entry-note {
+    font-size: 12px;
+    color: var(--sub);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    font-style: italic;
+  }
+
+  .entry-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .entry-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: var(--bg);
+    color: var(--sub);
+    border: 1px solid var(--border);
+  }
+
+  .entry-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--sub);
+    padding: 3px;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .btn-icon:hover { color: var(--danger); background: #fef0ee; }
+  .btn-icon.copy:hover { color: var(--accent); background: var(--accent-light); }
+
+  .entry-date {
+    font-size: 11px;
+    color: var(--sub);
+  }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--sub);
+  }
+
+  .empty-icon { font-size: 40px; margin-bottom: 10px; }
+  .empty h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+  .empty p { font-size: 13px; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1a1917;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0;
+    transition: all 0.25s;
+    z-index: 200;
+    white-space: nowrap;
+  }
+
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Loading */
+  .loading-overlay {
+    text-align: center;
+    padding: 40px;
+    color: var(--sub);
+    font-size: 14px;
+  }
+
+  mark {
+    background: #fff3a3;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Trans<span>Mem</span></div>
+  <div class="sync-status">
+    <div class="sync-dot" id="syncDot"></div>
+    <span id="syncText">接続中...</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Add form -->
+  <div class="add-card">
+    <h2>フレーズを追加</h2>
+    <div class="field-row">
+      <div class="field">
+        <label>原文</label>
+        <input type="text" id="srcText" placeholder="例：How are you?" />
+      </div>
+      <div class="field">
+        <label>翻訳</label>
+        <input type="text" id="tgtText" placeholder="例：お元気ですか？" />
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>原文言語</label>
+        <select id="srcLang">
+          <option value="EN">英語</option>
+          <option value="JA">日本語</option>
+          <option value="ZH">中国語</option>
+          <option value="KO">韓国語</option>
+          <option value="FR">フランス語</option>
+          <option value="DE">ドイツ語</option>
+          <option value="ES">スペイン語</option>
+          <option value="PT">ポルトガル語</option>
+          <option value="IT">イタリア語</option>
+          <option value="RU">ロシア語</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>翻訳言語</label>
+        <select id="tgtLang">
+          <option value="JA">日本語</option>
+          <option value="EN">英語</option>
+          <option value="ZH">中国語</option>
+          <option value="KO">韓国語</option>
+          <option value="FR">フランス語</option>
+          <option value="DE">ドイツ語</option>
+          <option value="ES">スペイン語</option>
+          <option value="PT">ポルトガル語</option>
+          <option value="IT">イタリア語</option>
+          <option value="RU">ロシア語</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>タグ（任意）</label>
+        <input type="text" id="tagInput" placeholder="例：ビジネス、旅行..." />
+      </div>
+      <div class="field note-field">
+        <label>メモ（任意）</label>
+        <input type="text" id="noteInput" placeholder="使い方や文脈など..." />
+      </div>
+    </div>
+    <button class="btn-add" id="addBtn" onclick="addEntry()">追加する</button>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="原文・翻訳・タグで検索..." oninput="renderList()" />
+  </div>
+
+  <!-- Filter tags -->
+  <div class="filter-row" id="filterRow"></div>
+
+  <!-- Stats -->
+  <div class="stats" id="stats"></div>
+
+  <!-- List -->
+  <div class="entry-list" id="entryList">
+    <div class="loading-overlay">読み込み中...</div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBrlEr6tBt7Am3NZqKVpoKebN1Gxm8kN8M",
+  authDomain: "yutaka-t-edfd6.firebaseapp.com",
+  projectId: "yutaka-t-edfd6",
+  storageBucket: "yutaka-t-edfd6.firebasestorage.app",
+  messagingSenderId: "596752565912",
+  appId: "1:596752565912:web:132718f0338fc2f621b2ed"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let entries = [];
+let activeTag = "すべて";
+
+const syncDot = document.getElementById("syncDot");
+const syncText = document.getElementById("syncText");
+
+function setSyncStatus(state) {
+  syncDot.className = "sync-dot " + state;
+  syncText.textContent = state === "ok" ? "同期済み" : state === "loading" ? "同期中..." : "オフライン";
+}
+
+// Realtime listener
+setSyncStatus("loading");
+const q = query(collection(db, "entries"), orderBy("createdAt", "desc"));
+onSnapshot(q, (snapshot) => {
+  entries = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+  setSyncStatus("ok");
+  renderList();
+  renderTags();
+}, (err) => {
+  setSyncStatus("error");
+  console.error(err);
+});
+
+// Add entry
+window.addEntry = async function() {
+  const src = document.getElementById("srcText").value.trim();
+  const tgt = document.getElementById("tgtText").value.trim();
+  const srcLang = document.getElementById("srcLang").value;
+  const tgtLang = document.getElementById("tgtLang").value;
+  const tag = document.getElementById("tagInput").value.trim();
+  const note = document.getElementById("noteInput").value.trim();
+
+  if (!src || !tgt) { showToast("原文と翻訳を入力してください"); return; }
+
+  const btn = document.getElementById("addBtn");
+  btn.disabled = true;
+  setSyncStatus("loading");
+
+  try {
+    await addDoc(collection(db, "entries"), {
+      src, tgt, srcLang, tgtLang,
+      tag: tag || "未分類",
+      note,
+      createdAt: serverTimestamp()
+    });
+    document.getElementById("srcText").value = "";
+    document.getElementById("tgtText").value = "";
+    document.getElementById("tagInput").value = "";
+    document.getElementById("noteInput").value = "";
+    showToast("✓ 追加しました");
+  } catch(e) {
+    showToast("エラーが発生しました");
+    setSyncStatus("error");
+  }
+  btn.disabled = false;
+};
+
+// Delete entry
+window.deleteEntry = async function(id) {
+  if (!confirm("このフレーズを削除しますか？")) return;
+  setSyncStatus("loading");
+  try {
+    await deleteDoc(doc(db, "entries", id));
+    showToast("削除しました");
+  } catch(e) {
+    showToast("削除に失敗しました");
+    setSyncStatus("error");
+  }
+};
+
+// Copy
+window.copyText = function(text) {
+  navigator.clipboard.writeText(text).then(() => showToast("コピーしました"));
+};
+
+// Render tags
+function renderTags() {
+  const tags = ["すべて", ...new Set(entries.map(e => e.tag).filter(Boolean))];
+  const row = document.getElementById("filterRow");
+  row.innerHTML = tags.map(t =>
+    `<button class="tag-filter ${t === activeTag ? 'active' : ''}" onclick="setTag('${t}')">${t}</button>`
+  ).join("");
+}
+
+window.setTag = function(tag) {
+  activeTag = tag;
+  renderTags();
+  renderList();
+};
+
+// Render list
+window.renderList = function() {
+  const q = document.getElementById("searchInput").value.trim().toLowerCase();
+  let filtered = entries;
+
+  if (activeTag !== "すべて") {
+    filtered = filtered.filter(e => e.tag === activeTag);
+  }
+
+  if (q) {
+    filtered = filtered.filter(e =>
+      e.src?.toLowerCase().includes(q) ||
+      e.tgt?.toLowerCase().includes(q) ||
+      e.tag?.toLowerCase().includes(q) ||
+      e.note?.toLowerCase().includes(q)
+    );
+  }
+
+  const stats = document.getElementById("stats");
+  stats.textContent = `${filtered.length} 件`;
+
+  const list = document.getElementById("entryList");
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty">
+      <div class="empty-icon">📭</div>
+      <h3>${entries.length === 0 ? 'まだフレーズがありません' : '該当なし'}</h3>
+      <p>${entries.length === 0 ? '上のフォームから最初のフレーズを追加しましょう' : '別のキーワードで試してください'}</p>
+    </div>`;
+    return;
+  }
+
+  function hl(text) {
+    if (!q) return text || "";
+    return (text || "").replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'),
+      m => `<mark>${m}</mark>`);
+  }
+
+  list.innerHTML = filtered.map(e => {
+    const date = e.createdAt?.toDate ? e.createdAt.toDate().toLocaleDateString('ja-JP') : "";
+    return `<div class="entry-card">
+      <div class="entry-langs">
+        <span class="lang-badge">${e.srcLang || 'EN'}</span>
+        <span class="entry-text">${hl(e.src)}</span>
+        <button class="btn-icon copy" onclick="copyText('${(e.src||'').replace(/'/g,"\\'")}')">📋</button>
+      </div>
+      <div class="entry-divider"></div>
+      <div class="entry-translation">
+        <span class="lang-badge tl">${e.tgtLang || 'JA'}</span>
+        <span class="entry-text">${hl(e.tgt)}</span>
+        <button class="btn-icon copy" onclick="copyText('${(e.tgt||'').replace(/'/g,"\\'")}')">📋</button>
+      </div>
+      ${e.note ? `<div class="entry-note">💬 ${hl(e.note)}</div>` : ''}
+      <div class="entry-footer">
+        <div style="display:flex;gap:6px;align-items:center">
+          <span class="entry-tag">${e.tag || '未分類'}</span>
+          <span class="entry-date">${date}</span>
+        </div>
+        <div class="entry-actions">
+          <button class="btn-icon" onclick="deleteEntry('${e.id}')" title="削除">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+// Toast
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2000);
+}
+
+// Enter key to add
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && (e.target.id === "srcText" || e.target.id === "tgtText")) {
+    addEntry();
+  }
+});
+</script>
+</body>
+</html>
