@@ -5,181 +5,151 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TransMem</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --border: #e2e0d8;
+  --text: #1a1917;
+  --sub: #7a7870;
+  --accent: #2d5be3;
+  --accent-light: #eef1fd;
+  --danger: #c0392b;
+  --success: #1a7a4a;
+  --warning: #b45309;
+  --shadow: 0 1px 4px rgba(0,0,0,0.08);
+  --radius: 10px;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
 
-  :root {
-    --bg: #f7f6f2;
-    --surface: #ffffff;
-    --border: #e2e0d8;
-    --text: #1a1917;
-    --sub: #7a7870;
-    --accent: #2d5be3;
-    --accent-light: #eef1fd;
-    --danger: #c0392b;
-    --success: #1a7a4a;
-    --shadow: 0 1px 4px rgba(0,0,0,0.08);
-    --radius: 10px;
-  }
+/* Header */
+header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.logo { font-size: 18px; font-weight: 700; color: var(--text); }
+.logo span { color: var(--accent); }
+.sync-status { font-size: 12px; color: var(--sub); display: flex; align-items: center; gap: 5px; }
+.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; transition: background 0.3s; }
+.sync-dot.ok { background: var(--success); }
+.sync-dot.loading { background: #f0a500; animation: pulse 1s infinite; }
+.sync-dot.error { background: var(--danger); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+/* Bottom tabs */
+.tab-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; z-index: 100; }
+.tab-btn { flex: 1; padding: 10px 4px 12px; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--sub); font-size: 10px; font-weight: 500; transition: color 0.15s; }
+.tab-btn .tab-icon { font-size: 20px; }
+.tab-btn.active { color: var(--accent); }
 
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+/* Tab content */
+.tab-content { display: none; max-width: 680px; margin: 0 auto; padding: 16px 16px; }
+.tab-content.active { display: block; }
 
-  .logo { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; color: var(--text); }
-  .logo span { color: var(--accent); }
+/* Cards */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.card h2 { font-size: 13px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
 
-  .sync-status { font-size: 12px; color: var(--sub); display: flex; align-items: center; gap: 5px; }
-  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; transition: background 0.3s; }
-  .sync-dot.ok { background: var(--success); }
-  .sync-dot.loading { background: #f0a500; animation: pulse 1s infinite; }
-  .sync-dot.error { background: var(--danger); }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+/* Fields */
+.field { margin-bottom: 10px; }
+.field label { display: block; font-size: 11px; font-weight: 600; color: var(--sub); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 7px;
+  font-size: 14px; font-family: inherit; background: var(--bg); color: var(--text);
+  outline: none; transition: border-color 0.15s; resize: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); background: #fff; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media(max-width:480px) { .field-row { grid-template-columns: 1fr; } }
 
-  .container { max-width: 680px; margin: 0 auto; padding: 20px 16px 80px; }
+/* Buttons */
+.btn { padding: 10px 16px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; font-family: inherit; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--accent); color: #fff; width: 100%; padding: 12px; }
+.btn-primary:hover:not(:disabled) { opacity: 0.88; }
+.btn-success { background: var(--success); color: #fff; }
+.btn-success:hover:not(:disabled) { opacity: 0.88; }
+.btn-outline { background: none; border: 1px solid var(--border); color: var(--text); }
+.btn-outline:hover:not(:disabled) { background: var(--bg); }
+.btn-danger { background: var(--danger); color: #fff; }
 
-  .add-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow);
-  }
+/* Search tab */
+.search-bar { position: relative; margin-bottom: 12px; }
+.search-bar input { width: 100%; padding: 12px 16px 12px 42px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 15px; background: var(--surface); color: var(--text); outline: none; box-shadow: var(--shadow); }
+.search-bar input:focus { border-color: var(--accent); }
+.search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--sub); font-size: 16px; }
 
-  .add-card h2 { font-size: 13px; font-weight: 600; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+.external-links { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.ext-link { display: inline-flex; align-items: center; gap: 5px; padding: 7px 12px; border-radius: 7px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid var(--border); background: var(--surface); color: var(--text); transition: all 0.15s; }
+.ext-link:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
- 
+.filter-row { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.chip { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); font-size: 12px; cursor: pointer; background: var(--surface); color: var(--sub); transition: all 0.15s; white-space: nowrap; }
+.chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.chip.my { background: #eef1fd; color: var(--accent); border-color: var(--accent); }
+.chip.ref { background: #fef3e2; color: var(--warning); border-color: #f0a500; }
 
-  /* Excel import section */
-  .excel-section {
-    background: #f0faf4;
-    border: 1px dashed var(--success);
-    border-radius: 8px;
-    padding: 14px;
-    margin-bottom: 14px;
-  }
-  .excel-section h3 { font-size: 12px; font-weight: 700; color: var(--success); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .excel-drop-area {
-    border: 2px dashed #a8d5b5;
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.15s;
-    background: var(--surface);
-  }
-  .excel-drop-area:hover, .excel-drop-area.dragover { background: #edf7f1; border-color: var(--success); }
-  .excel-drop-area p { font-size: 13px; color: var(--sub); margin-top: 6px; }
-  .excel-drop-area .icon { font-size: 28px; }
-  .excel-drop-area strong { font-size: 14px; color: var(--text); }
-  .import-preview {
-    margin-top: 10px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    overflow: hidden;
-    display: none;
-  }
-  .import-preview.show { display: block; }
-  .import-preview-header {
-    padding: 8px 12px;
-    background: #edf7f1;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--success);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .import-preview table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .import-preview td { padding: 6px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
-  .import-preview tr:last-child td { border-bottom: none; }
-  .import-preview td:first-child { color: var(--sub); width: 50%; }
-  .btn-import {
-    width: 100%; padding: 10px; background: var(--success); color: #fff;
-    border: none; border-radius: 7px; font-size: 13px; font-weight: 600;
-    cursor: pointer; margin-top: 8px; transition: opacity 0.15s;
-  }
-  .btn-import:hover { opacity: 0.88; }
-  .btn-import:disabled { opacity: 0.5; cursor: not-allowed; }
+.stats { font-size: 12px; color: var(--sub); margin-bottom: 10px; }
 
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
-  .field label { display: block; font-size: 11px; font-weight: 600; color: var(--sub); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
-  .field input, .field select {
-    width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 7px;
-    font-size: 14px; font-family: inherit; background: var(--bg); color: var(--text);
-    transition: border-color 0.15s; outline: none;
-  }
-  .field input:focus, .field select:focus { border-color: var(--accent); background: #fff; }
+/* Entry cards */
+.entry-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 10px; }
+.entry-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+.badge-en { background: var(--accent-light); color: var(--accent); }
+.badge-ja { background: #edf7f1; color: var(--success); }
+.badge-my { background: #eef1fd; color: var(--accent); border: 1px solid var(--accent); }
+.badge-ref { background: #fef3e2; color: var(--warning); border: 1px solid #f0a500; }
+.badge-genre { background: var(--bg); color: var(--sub); border: 1px solid var(--border); }
+.entry-text { font-size: 15px; font-weight: 500; line-height: 1.4; flex: 1; }
+.entry-divider { height: 1px; background: var(--border); margin: 8px 0; }
+.entry-meta { font-size: 11px; color: var(--sub); margin-top: 6px; display: flex; flex-wrap: wrap; gap: 8px; }
+.entry-meta span { display: flex; align-items: center; gap: 3px; }
+.entry-actions-row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+.btn-icon { background: none; border: none; cursor: pointer; font-size: 15px; color: var(--sub); padding: 4px; border-radius: 4px; transition: all 0.15s; }
+.btn-icon:hover { color: var(--danger); background: #fef0ee; }
+.btn-icon.copy:hover { color: var(--accent); background: var(--accent-light); }
 
-  .btn-add {
-    width: 100%; padding: 11px; background: var(--accent); color: #fff;
-    border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
-    cursor: pointer; margin-top: 4px; transition: opacity 0.15s;
-  }
-  .btn-add:hover { opacity: 0.88; }
-  .btn-add:disabled { opacity: 0.5; cursor: not-allowed; }
+/* OCR tab */
+.ocr-box { border: 2px dashed var(--border); border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--bg); margin-bottom: 10px; }
+.ocr-box:hover { border-color: var(--accent); background: var(--accent-light); }
+.ocr-box.has-image { border-color: var(--success); background: #edf7f1; }
+.ocr-preview-img { width: 100%; max-height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; display: none; }
+.ocr-preview-img.show { display: block; }
+.ocr-status { font-size: 12px; color: var(--sub); margin-top: 4px; }
+.ocr-status.ok { color: var(--success); }
+.ocr-status.loading { color: var(--warning); }
+.ocr-status.error { color: var(--danger); }
+.progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 6px; overflow: hidden; display: none; }
+.progress-bar.show { display: block; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
 
-  .search-bar { position: relative; margin-bottom: 16px; }
-  .search-bar input {
-    width: 100%; padding: 11px 16px 11px 40px; border: 1px solid var(--border);
-    border-radius: var(--radius); font-size: 14px; background: var(--surface);
-    color: var(--text); outline: none; box-shadow: var(--shadow); transition: border-color 0.15s;
-  }
-  .search-bar input:focus { border-color: var(--accent); }
-  .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--sub); font-size: 16px; }
+/* Data tab */
+.data-section { margin-bottom: 16px; }
+.data-section h3 { font-size: 13px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.excel-drop { border: 2px dashed #a8d5b5; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--surface); }
+.excel-drop:hover, .excel-drop.dragover { background: #edf7f1; border-color: var(--success); }
+.import-preview { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; overflow: hidden; margin-top: 10px; display: none; }
+.import-preview.show { display: block; }
+.import-preview-header { padding: 8px 12px; background: #edf7f1; font-size: 12px; font-weight: 600; color: var(--success); display: flex; justify-content: space-between; }
+.import-preview table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.import-preview td { padding: 6px 10px; border-bottom: 1px solid var(--border); }
+.import-preview tr:last-child td { border-bottom: none; }
 
-  .filter-row { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
-  .tag-filter { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); font-size: 12px; cursor: pointer; background: var(--surface); color: var(--sub); transition: all 0.15s; }
-  .tag-filter.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+/* Empty state */
+.empty { text-align: center; padding: 50px 20px; color: var(--sub); }
+.empty-icon { font-size: 36px; margin-bottom: 8px; }
+.empty h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.empty p { font-size: 13px; }
 
-  .stats { font-size: 12px; color: var(--sub); margin-bottom: 12px; }
+/* Toast */
+.toast { position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%) translateY(10px); background: #1a1917; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 300; white-space: nowrap; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  .entry-list { display: flex; flex-direction: column; gap: 10px; }
-  .entry-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
-  .entry-langs { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-  .lang-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: var(--accent-light); color: var(--accent); min-width: 28px; text-align: center; flex-shrink: 0; margin-top: 2px; }
-  .entry-text { font-size: 15px; font-weight: 500; line-height: 1.4; color: var(--text); flex: 1; }
-  .entry-divider { width: 100%; height: 1px; background: var(--border); margin: 8px 0; }
-  .entry-translation { display: flex; align-items: flex-start; gap: 10px; }
-  .lang-badge.tl { background: #edf7f1; color: var(--success); }
-  .entry-note { font-size: 12px; color: var(--sub); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-style: italic; }
-  .entry-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
-  .entry-tag { font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--bg); color: var(--sub); border: 1px solid var(--border); }
-  .entry-actions { display: flex; gap: 8px; }
-  .btn-icon { background: none; border: none; cursor: pointer; font-size: 15px; color: var(--sub); padding: 3px; border-radius: 4px; transition: color 0.15s, background 0.15s; }
-  .btn-icon:hover { color: var(--danger); background: #fef0ee; }
-  .btn-icon.copy:hover { color: var(--accent); background: var(--accent-light); }
-  .entry-date { font-size: 11px; color: var(--sub); }
+mark { background: #fff3a3; border-radius: 2px; }
+input[type="file"] { display: none; }
 
-  .empty { text-align: center; padding: 60px 20px; color: var(--sub); }
-  .empty-icon { font-size: 40px; margin-bottom: 10px; }
-  .empty h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
-  .empty p { font-size: 13px; }
-
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1917; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 200; white-space: nowrap; }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  .loading-overlay { text-align: center; padding: 40px; color: var(--sub); font-size: 14px; }
-
-  mark { background: #fff3a3; border-radius: 2px; }
-  input[type="file"] { display: none; }
+.source-toggle { display: flex; gap: 8px; margin-bottom: 10px; }
+.toggle-btn { flex: 1; padding: 8px; border-radius: 7px; border: 1px solid var(--border); background: var(--bg); color: var(--sub); font-size: 13px; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.15s; }
+.toggle-btn.active-my { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.toggle-btn.active-ref { background: #fef3e2; border-color: #f0a500; color: var(--warning); }
 </style>
 </head>
 <body>
@@ -192,21 +162,131 @@
   </div>
 </header>
 
-<div class="container">
+<!-- TAB: 検索 -->
+<div class="tab-content active" id="tab-search">
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="フレーズ・作品名・文脈で検索..." oninput="onSearch()" />
+  </div>
 
-  <div class="add-card">
-    <h2>フレーズを追加</h2>
-    <!-- Excel Import -->
-    <div class="excel-section">
-      <h3>📊 Excelから一括インポート</h3>
-      <div class="excel-drop-area" id="dropArea"
-        onclick="document.getElementById('excelInput').click()"
+  <div class="external-links" id="extLinks" style="display:none">
+    <a class="ext-link" id="reversoLink" href="#" target="_blank">🔗 Reverso Context</a>
+    <a class="ext-link" id="lingueeLink" href="#" target="_blank">🔗 Linguee</a>
+  </div>
+
+  <div class="filter-row" id="filterRow"></div>
+
+  <div class="filter-row">
+    <button class="chip active" id="filterAll" onclick="setSourceFilter('all')">すべて</button>
+    <button class="chip" id="filterMy" onclick="setSourceFilter('my')">自分の訳のみ</button>
+    <button class="chip" id="filterRef" onclick="setSourceFilter('ref')">参照事例のみ</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div id="entryList"><div class="empty"><div class="empty-icon">🔍</div><h3>検索してください</h3><p>上の検索欄にキーワードを入力</p></div></div>
+</div>
+
+<!-- TAB: 登録 -->
+<div class="tab-content" id="tab-register">
+  <div class="card">
+    <h2>新規登録</h2>
+
+    <div class="source-toggle">
+      <div class="toggle-btn active-my" id="toggleMy" onclick="setSourceType('my')">✏️ 自分の訳</div>
+      <div class="toggle-btn" id="toggleRef" onclick="setSourceType('ref')">📚 参照事例</div>
+    </div>
+    <input type="hidden" id="sourceType" value="my" />
+
+    <div class="field-row">
+      <div class="field"><label>原文</label><input type="text" id="srcText" placeholder="英語フレーズ" /></div>
+      <div class="field"><label>翻訳</label><input type="text" id="tgtText" placeholder="日本語訳" /></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>原文言語</label>
+        <select id="srcLang">
+          <option value="EN">英語</option><option value="JA">日本語</option><option value="ZH">中国語</option>
+          <option value="KO">韓国語</option><option value="FR">フランス語</option><option value="DE">ドイツ語</option>
+          <option value="ES">スペイン語</option><option value="PT">ポルトガル語</option><option value="IT">イタリア語</option>
+        </select>
+      </div>
+      <div class="field"><label>翻訳言語</label>
+        <select id="tgtLang">
+          <option value="JA">日本語</option><option value="EN">英語</option><option value="ZH">中国語</option>
+          <option value="KO">韓国語</option><option value="FR">フランス語</option><option value="DE">ドイツ語</option>
+          <option value="ES">スペイン語</option><option value="PT">ポルトガル語</option><option value="IT">イタリア語</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>作品名</label><input type="text" id="titleInput" placeholder="例：SUITS" /></div>
+      <div class="field"><label>ジャンル</label>
+        <select id="genreInput">
+          <option value="">未設定</option><option value="映画">映画</option><option value="ドラマ">ドラマ</option>
+          <option value="ドキュメンタリー">ドキュメンタリー</option><option value="アニメ">アニメ</option>
+          <option value="ニュース">ニュース</option><option value="その他">その他</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>文脈・コンテキスト</label><input type="text" id="contextInput" placeholder="例：皮肉で言っている、感情的な場面など" /></div>
+    <div class="field" id="refSourceField" style="display:none"><label>参照元・出典</label><input type="text" id="refSource" placeholder="例：字幕ファイル、公式翻訳など" /></div>
+    <div class="field"><label>メモ</label><input type="text" id="noteInput" placeholder="その他メモ" /></div>
+    <div class="field"><label>タグ</label><input type="text" id="tagInput" placeholder="例：法律、ビジネス..." /></div>
+    <button class="btn btn-primary" id="addBtn" onclick="addEntry()">登録する</button>
+  </div>
+</div>
+
+<!-- TAB: 画像読取 -->
+<div class="tab-content" id="tab-ocr">
+  <div class="card">
+    <h2>画像から文字起こし</h2>
+    <p style="font-size:13px;color:var(--sub);margin-bottom:14px">画像を選択すると自動でテキストを読み取ります。修正後に登録できます。</p>
+
+    <div class="field-row">
+      <div>
+        <div class="field"><label>原文の画像</label></div>
+        <div class="ocr-box" id="srcOcrBox" onclick="document.getElementById('srcOcrInput').click()">
+          <img class="ocr-preview-img" id="srcOcrPreview" />
+          <div>📷 画像を選択</div>
+          <div class="ocr-status" id="srcOcrStatus"></div>
+          <div class="progress-bar" id="srcProgressBar"><div class="progress-fill" id="srcProgressFill" style="width:0%"></div></div>
+        </div>
+        <input type="file" id="srcOcrInput" accept="image/*" onchange="runOCR(this,'src')" />
+      </div>
+      <div>
+        <div class="field"><label>翻訳の画像</label></div>
+        <div class="ocr-box" id="tgtOcrBox" onclick="document.getElementById('tgtOcrInput').click()">
+          <img class="ocr-preview-img" id="tgtOcrPreview" />
+          <div>📷 画像を選択</div>
+          <div class="ocr-status" id="tgtOcrStatus"></div>
+          <div class="progress-bar" id="tgtProgressBar"><div class="progress-fill" id="tgtProgressFill" style="width:0%"></div></div>
+        </div>
+        <input type="file" id="tgtOcrInput" accept="image/*" onchange="runOCR(this,'tgt')" />
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field"><label>原文（修正可能）</label><textarea id="ocrSrcText" rows="3" placeholder="読み取り結果が入ります"></textarea></div>
+      <div class="field"><label>翻訳（修正可能）</label><textarea id="ocrTgtText" rows="3" placeholder="読み取り結果が入ります"></textarea></div>
+    </div>
+    <button class="btn btn-primary" onclick="sendToRegister()">登録タブへ送る →</button>
+  </div>
+</div>
+
+<!-- TAB: データ管理 -->
+<div class="tab-content" id="tab-data">
+
+  <!-- Import -->
+  <div class="card">
+    <h2>📥 インポート</h2>
+    <div class="data-section">
+      <h3>Excelインポート</h3>
+      <div class="excel-drop" id="dropArea" onclick="document.getElementById('excelInput').click()"
         ondragover="event.preventDefault();this.classList.add('dragover')"
         ondragleave="this.classList.remove('dragover')"
         ondrop="handleDrop(event)">
-        <div class="icon">📂</div>
-        <strong>Excelファイルを選択またはドロップ</strong>
-        <p>A列：英語　B列：日本語</p>
+        <div style="font-size:28px">📂</div>
+        <strong style="font-size:14px">Excelファイルを選択またはドロップ</strong>
+        <p style="font-size:12px;color:var(--sub);margin-top:4px">A:原文 B:翻訳 C:文脈 D:作品名 E:ジャンル F:ソース種別 G:参照元 H:メモ</p>
       </div>
       <input type="file" id="excelInput" accept=".xlsx,.xls,.csv" onchange="handleExcelFile(this.files[0])" />
       <div class="import-preview" id="importPreview">
@@ -215,89 +295,62 @@
           <span style="color:var(--sub);font-weight:400">プレビュー（最初の3件）</span>
         </div>
         <table id="previewTable"></table>
-        <div style="padding:10px">
-          <button class="btn-import" id="importBtn" onclick="importEntries()">すべてインポートする</button>
-        </div>
+        <div style="padding:10px"><button class="btn btn-success" id="importBtn" onclick="importEntries()">すべてインポートする</button></div>
       </div>
     </div>
 
-    <!-- Manual input -->
-    <div class="field-row">
-      <div class="field">
-        <label>原文（英語）</label>
-        <input type="text" id="srcText" placeholder="例：How are you?" />
+    <div class="data-section">
+      <h3>JSONリストア</h3>
+      <div class="excel-drop" onclick="document.getElementById('jsonInput').click()">
+        <div style="font-size:28px">🔄</div>
+        <strong style="font-size:14px">バックアップJSONを選択</strong>
+        <p style="font-size:12px;color:var(--sub);margin-top:4px">以前エクスポートしたJSONファイルを復元</p>
       </div>
-      <div class="field">
-        <label>翻訳（日本語）</label>
-        <input type="text" id="tgtText" placeholder="例：お元気ですか？" />
-      </div>
+      <input type="file" id="jsonInput" accept=".json" onchange="handleJsonRestore(this.files[0])" />
     </div>
-    <div class="field-row">
-      <div class="field">
-        <label>原文言語</label>
-        <select id="srcLang">
-          <option value="EN">英語</option>
-          <option value="JA">日本語</option>
-          <option value="ZH">中国語</option>
-          <option value="KO">韓国語</option>
-          <option value="FR">フランス語</option>
-          <option value="DE">ドイツ語</option>
-          <option value="ES">スペイン語</option>
-          <option value="PT">ポルトガル語</option>
-          <option value="IT">イタリア語</option>
-          <option value="RU">ロシア語</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>翻訳言語</label>
-        <select id="tgtLang">
-          <option value="JA">日本語</option>
-          <option value="EN">英語</option>
-          <option value="ZH">中国語</option>
-          <option value="KO">韓国語</option>
-          <option value="FR">フランス語</option>
-          <option value="DE">ドイツ語</option>
-          <option value="ES">スペイン語</option>
-          <option value="PT">ポルトガル語</option>
-          <option value="IT">イタリア語</option>
-          <option value="RU">ロシア語</option>
-        </select>
-      </div>
-    </div>
-    <div class="field-row">
-      <div class="field">
-        <label>タグ（任意）</label>
-        <input type="text" id="tagInput" placeholder="例：ビジネス、旅行..." />
-      </div>
-      <div class="field">
-        <label>メモ（任意）</label>
-        <input type="text" id="noteInput" placeholder="使い方や文脈など..." />
-      </div>
-    </div>
-    <button class="btn-add" id="addBtn" onclick="addEntry()">追加する</button>
   </div>
 
-  <!-- Search -->
-  <div class="search-bar">
-    <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="原文・翻訳・タグで検索..." oninput="renderList()" />
+  <!-- Export -->
+  <div class="card">
+    <h2>📤 エクスポート</h2>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="exportExcel()">📊 Excelで保存</button>
+      <button class="btn btn-outline" onclick="exportCSV()">📄 CSVで保存</button>
+      <button class="btn btn-outline" onclick="exportJSON()">💾 JSONバックアップ</button>
+    </div>
+    <p style="font-size:12px;color:var(--sub);margin-top:10px">JSONバックアップはアプリ更新・機種変更時のデータ復元に使用できます。</p>
   </div>
 
-  <div class="filter-row" id="filterRow"></div>
-  <div class="stats" id="stats"></div>
-
-  <div class="entry-list" id="entryList">
-    <div class="loading-overlay">読み込み中...</div>
+  <!-- Stats -->
+  <div class="card">
+    <h2>📊 データ統計</h2>
+    <div id="dataStats" style="font-size:14px;color:var(--sub)">読み込み中...</div>
   </div>
+</div>
 
+<!-- Bottom tab bar -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('search')" id="tabBtn-search">
+    <span class="tab-icon">🔍</span>検索
+  </button>
+  <button class="tab-btn" onclick="switchTab('register')" id="tabBtn-register">
+    <span class="tab-icon">✏️</span>登録
+  </button>
+  <button class="tab-btn" onclick="switchTab('ocr')" id="tabBtn-ocr">
+    <span class="tab-icon">📷</span>画像読取
+  </button>
+  <button class="tab-btn" onclick="switchTab('data')" id="tabBtn-data">
+    <span class="tab-icon">📊</span>データ管理
+  </button>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, writeBatch }
+import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, writeBatch, getDocs }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -309,34 +362,246 @@ const firebaseConfig = {
   appId: "1:596752565912:web:132718f0338fc2f621b2ed"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let entries = [];
 let activeTag = "すべて";
+let sourceFilter = "all";
 let pendingImport = [];
 
+// ── Sync status ──
 const syncDot = document.getElementById("syncDot");
 const syncText = document.getElementById("syncText");
-
-function setSyncStatus(state) {
-  syncDot.className = "sync-dot " + state;
-  syncText.textContent = state === "ok" ? "同期済み" : state === "loading" ? "同期中..." : "オフライン";
+function setSyncStatus(s) {
+  syncDot.className = "sync-dot " + s;
+  syncText.textContent = s === "ok" ? "同期済み" : s === "loading" ? "同期中..." : "オフライン";
 }
 
 setSyncStatus("loading");
 const q = query(collection(db, "entries"), orderBy("createdAt", "desc"));
-onSnapshot(q, (snapshot) => {
-  entries = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+onSnapshot(q, snap => {
+  entries = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   setSyncStatus("ok");
   renderList();
   renderTags();
-}, (err) => {
-  setSyncStatus("error");
-  console.error(err);
-});
+  updateDataStats();
+}, err => { setSyncStatus("error"); console.error(err); });
 
+// ── Tab switching ──
+window.switchTab = function(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('tabBtn-' + tab).classList.add('active');
+};
+
+// ── Source type toggle ──
+window.setSourceType = function(type) {
+  document.getElementById('sourceType').value = type;
+  document.getElementById('toggleMy').className = 'toggle-btn' + (type === 'my' ? ' active-my' : '');
+  document.getElementById('toggleRef').className = 'toggle-btn' + (type === 'ref' ? ' active-ref' : '');
+  document.getElementById('refSourceField').style.display = type === 'ref' ? 'block' : 'none';
+};
+
+// ── Search ──
+window.onSearch = function() {
+  const q = document.getElementById('searchInput').value.trim();
+  const extLinks = document.getElementById('extLinks');
+  if (q) {
+    extLinks.style.display = 'flex';
+    document.getElementById('reversoLink').href = `https://context.reverso.net/translation/english-japanese/${encodeURIComponent(q)}`;
+    document.getElementById('lingueeLink').href = `https://www.linguee.com/english-japanese/search?query=${encodeURIComponent(q)}`;
+  } else {
+    extLinks.style.display = 'none';
+  }
+  renderList();
+};
+
+window.setSourceFilter = function(f) {
+  sourceFilter = f;
+  document.getElementById('filterAll').className = 'chip' + (f === 'all' ? ' active' : '');
+  document.getElementById('filterMy').className = 'chip' + (f === 'my' ? ' active' : '');
+  document.getElementById('filterRef').className = 'chip' + (f === 'ref' ? ' active' : '');
+  renderList();
+};
+
+// ── Tags ──
+function renderTags() {
+  const tags = ["すべて", ...new Set(entries.map(e => e.tag).filter(Boolean))];
+  document.getElementById("filterRow").innerHTML = tags.map(t =>
+    `<button class="chip ${t === activeTag ? 'active' : ''}" onclick="setTag('${t.replace(/'/g,"\\'")}' )">${t}</button>`
+  ).join("");
+}
+
+window.setTag = function(tag) { activeTag = tag; renderTags(); renderList(); };
+
+// ── Render list ──
+window.renderList = function() {
+  const q = document.getElementById("searchInput").value.trim().toLowerCase();
+  let filtered = entries;
+
+  if (activeTag !== "すべて") filtered = filtered.filter(e => e.tag === activeTag);
+  if (sourceFilter === 'my') filtered = filtered.filter(e => e.sourceType !== 'ref');
+  if (sourceFilter === 'ref') filtered = filtered.filter(e => e.sourceType === 'ref');
+  if (q) filtered = filtered.filter(e =>
+    [e.src, e.tgt, e.tag, e.note, e.title, e.context, e.refSource].some(v => v?.toLowerCase().includes(q))
+  );
+
+  document.getElementById("stats").textContent = `${filtered.length} 件`;
+
+  const list = document.getElementById("entryList");
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">${entries.length === 0 ? '📭' : '🔍'}</div>
+      <h3>${entries.length === 0 ? 'まだデータがありません' : '該当なし'}</h3>
+      <p>${entries.length === 0 ? '登録タブからフレーズを追加しましょう' : '別のキーワードで検索してください'}</p></div>`;
+    return;
+  }
+
+  function hl(text) {
+    if (!q || !text) return text || "";
+    return text.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), m => `<mark>${m}</mark>`);
+  }
+
+  list.innerHTML = filtered.map(e => {
+    const date = e.createdAt?.toDate ? e.createdAt.toDate().toLocaleDateString('ja-JP') : "";
+    const isRef = e.sourceType === 'ref';
+    return `<div class="entry-card">
+      <div class="entry-header">
+        <span class="badge badge-en">${e.srcLang || 'EN'}</span>
+        <span class="badge ${isRef ? 'badge-ref' : 'badge-my'}">${isRef ? '📚 参照' : '✏️ 自訳'}</span>
+        ${e.genre ? `<span class="badge badge-genre">${e.genre}</span>` : ''}
+        ${e.title ? `<span style="font-size:11px;color:var(--sub)">📽 ${hl(e.title)}</span>` : ''}
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:8px">
+        <span class="entry-text">${hl(e.src)}</span>
+        <button class="btn-icon copy" onclick="copyText('${(e.src||'').replace(/'/g,"\\'").replace(/\n/g,' ')}')">📋</button>
+      </div>
+      <div class="entry-divider"></div>
+      <div style="display:flex;align-items:flex-start;gap:8px">
+        <span class="badge badge-ja">${e.tgtLang || 'JA'}</span>
+        <span class="entry-text">${hl(e.tgt)}</span>
+        <button class="btn-icon copy" onclick="copyText('${(e.tgt||'').replace(/'/g,"\\'").replace(/\n/g,' ')}')">📋</button>
+      </div>
+      <div class="entry-meta">
+        ${e.context ? `<span>💬 ${hl(e.context)}</span>` : ''}
+        ${e.refSource ? `<span>📖 ${hl(e.refSource)}</span>` : ''}
+        ${e.tag ? `<span>🏷 ${e.tag}</span>` : ''}
+        ${e.note ? `<span>📝 ${hl(e.note)}</span>` : ''}
+        <span>${date}</span>
+      </div>
+      <div class="entry-actions-row">
+        <div></div>
+        <button class="btn-icon" onclick="deleteEntry('${e.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join("");
+};
+
+// ── Add entry ──
+window.addEntry = async function() {
+  const src = document.getElementById("srcText").value.trim();
+  const tgt = document.getElementById("tgtText").value.trim();
+  if (!src || !tgt) { showToast("原文と翻訳を入力してください"); return; }
+
+  const btn = document.getElementById("addBtn");
+  btn.disabled = true;
+  setSyncStatus("loading");
+
+  try {
+    await addDoc(collection(db, "entries"), {
+      src, tgt,
+      srcLang: document.getElementById("srcLang").value,
+      tgtLang: document.getElementById("tgtLang").value,
+      title: document.getElementById("titleInput").value.trim(),
+      genre: document.getElementById("genreInput").value,
+      context: document.getElementById("contextInput").value.trim(),
+      sourceType: document.getElementById("sourceType").value,
+      refSource: document.getElementById("refSource").value.trim(),
+      note: document.getElementById("noteInput").value.trim(),
+      tag: document.getElementById("tagInput").value.trim() || "未分類",
+      createdAt: serverTimestamp()
+    });
+    ["srcText","tgtText","titleInput","contextInput","refSource","noteInput","tagInput"].forEach(id => document.getElementById(id).value = "");
+    document.getElementById("genreInput").value = "";
+    showToast("✓ 登録しました");
+    switchTab('search');
+  } catch(e) {
+    showToast("エラーが発生しました");
+    setSyncStatus("error");
+  }
+  btn.disabled = false;
+};
+
+// ── Delete ──
+window.deleteEntry = async function(id) {
+  if (!confirm("削除しますか？")) return;
+  try {
+    await deleteDoc(doc(db, "entries", id));
+    showToast("削除しました");
+  } catch(e) { showToast("削除に失敗しました"); }
+};
+
+window.copyText = function(text) {
+  navigator.clipboard.writeText(text).then(() => showToast("コピーしました"));
+};
+
+// ── OCR (Tesseract.js) ──
+window.runOCR = async function(input, side) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const previewEl = document.getElementById(side + 'OcrPreview');
+  const statusEl = document.getElementById(side + 'OcrStatus');
+  const progressBar = document.getElementById(side + 'ProgressBar');
+  const progressFill = document.getElementById(side + 'ProgressFill');
+  const boxEl = document.getElementById(side + 'OcrBox');
+
+  // Preview
+  const reader = new FileReader();
+  reader.onload = e => { previewEl.src = e.target.result; previewEl.classList.add('show'); };
+  reader.readAsDataURL(file);
+
+  statusEl.textContent = "読み取り中...";
+  statusEl.className = "ocr-status loading";
+  progressBar.classList.add('show');
+  progressFill.style.width = '0%';
+
+  try {
+    const lang = side === 'src' ? 'eng' : 'jpn+eng';
+    const result = await Tesseract.recognize(file, lang, {
+      logger: m => {
+        if (m.status === 'recognizing text') {
+          progressFill.style.width = (m.progress * 100) + '%';
+        }
+      }
+    });
+
+    const text = result.data.text.trim();
+    document.getElementById(side === 'src' ? 'ocrSrcText' : 'ocrTgtText').value = text;
+    statusEl.textContent = "✓ 読み取り完了";
+    statusEl.className = "ocr-status ok";
+    boxEl.classList.add('has-image');
+    progressFill.style.width = '100%';
+    showToast("文字起こし完了！");
+  } catch(e) {
+    statusEl.textContent = "❌ 読み取り失敗";
+    statusEl.className = "ocr-status error";
+    showToast("OCRに失敗しました");
+  }
+  input.value = "";
+};
+
+// OCR → 登録タブへ
+window.sendToRegister = function() {
+  const src = document.getElementById('ocrSrcText').value.trim();
+  const tgt = document.getElementById('ocrTgtText').value.trim();
+  if (!src && !tgt) { showToast("テキストを読み取ってください"); return; }
+  document.getElementById('srcText').value = src;
+  document.getElementById('tgtText').value = tgt;
+  switchTab('register');
+  showToast("登録タブに送りました");
+};
 
 // ── Excel Import ──
 window.handleDrop = function(e) {
@@ -349,196 +614,143 @@ window.handleDrop = function(e) {
 window.handleExcelFile = function(file) {
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = (e) => {
+  reader.onload = e => {
     try {
-      const workbook = XLSX.read(e.target.result, { type: 'array' });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const wb = XLSX.read(e.target.result, { type: 'array' });
+      const sheet = wb.Sheets[wb.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-      pendingImport = rows
-        .filter(row => row[0] && row[1])
-        .map(row => ({
-          src: String(row[0]).trim(),
-          tgt: String(row[1]).trim(),
-          srcLang: "EN",
-          tgtLang: "JA",
-          tag: "インポート",
-          note: ""
-        }));
-
-      if (pendingImport.length === 0) {
-        showToast("有効なデータが見つかりませんでした");
-        return;
-      }
-
-      // Show preview
-      document.getElementById('importCount').textContent = `${pendingImport.length} 件のフレーズを検出`;
-      const preview3 = pendingImport.slice(0, 3);
-      document.getElementById('previewTable').innerHTML = preview3.map(r =>
-        `<tr><td>${r.src}</td><td>${r.tgt}</td></tr>`
-      ).join('');
+      pendingImport = rows.filter(r => r[0] && r[1]).map(r => ({
+        src: String(r[0]||'').trim(), tgt: String(r[1]||'').trim(),
+        context: String(r[2]||'').trim(), title: String(r[3]||'').trim(),
+        genre: String(r[4]||'').trim(), sourceType: r[5] === 'ref' ? 'ref' : 'my',
+        refSource: String(r[6]||'').trim(), note: String(r[7]||'').trim(),
+        srcLang: 'EN', tgtLang: 'JA', tag: 'インポート'
+      }));
+      if (!pendingImport.length) { showToast("有効なデータが見つかりませんでした"); return; }
+      document.getElementById('importCount').textContent = `${pendingImport.length} 件を検出`;
+      document.getElementById('previewTable').innerHTML = pendingImport.slice(0,3).map(r =>
+        `<tr><td>${r.src}</td><td>${r.tgt}</td></tr>`).join('');
       document.getElementById('importPreview').classList.add('show');
       document.getElementById('excelInput').value = '';
-    } catch(err) {
-      showToast("ファイルの読み込みに失敗しました");
-      console.error(err);
-    }
+    } catch(err) { showToast("ファイルの読み込みに失敗しました"); }
   };
   reader.readAsArrayBuffer(file);
 };
 
 window.importEntries = async function() {
-  if (pendingImport.length === 0) return;
+  if (!pendingImport.length) return;
   const btn = document.getElementById('importBtn');
-  btn.disabled = true;
-  btn.textContent = "インポート中...";
+  btn.disabled = true; btn.textContent = "インポート中...";
   setSyncStatus("loading");
-
   try {
-    // Firestore batch write (max 500 per batch)
-    const chunks = [];
     for (let i = 0; i < pendingImport.length; i += 499) {
-      chunks.push(pendingImport.slice(i, i + 499));
-    }
-
-    for (const chunk of chunks) {
       const batch = writeBatch(db);
-      chunk.forEach(item => {
-        const ref = doc(collection(db, "entries"));
-        batch.set(ref, { ...item, createdAt: serverTimestamp() });
+      pendingImport.slice(i, i+499).forEach(item => {
+        batch.set(doc(collection(db, "entries")), { ...item, createdAt: serverTimestamp() });
       });
       await batch.commit();
     }
-
     showToast(`✓ ${pendingImport.length} 件をインポートしました`);
     pendingImport = [];
     document.getElementById('importPreview').classList.remove('show');
-  } catch(e) {
-    console.error(e);
-    showToast("インポートに失敗しました");
-    setSyncStatus("error");
-  }
-
-  btn.disabled = false;
-  btn.textContent = "すべてインポートする";
+  } catch(e) { showToast("インポートに失敗しました"); setSyncStatus("error"); }
+  btn.disabled = false; btn.textContent = "すべてインポートする";
 };
 
-// ── Add single entry ──
-window.addEntry = async function() {
-  const src = document.getElementById("srcText").value.trim();
-  const tgt = document.getElementById("tgtText").value.trim();
-  const srcLang = document.getElementById("srcLang").value;
-  const tgtLang = document.getElementById("tgtLang").value;
-  const tag = document.getElementById("tagInput").value.trim();
-  const note = document.getElementById("noteInput").value.trim();
-
-  if (!src || !tgt) { showToast("原文と翻訳を入力してください"); return; }
-
-  const btn = document.getElementById("addBtn");
-  btn.disabled = true;
-  setSyncStatus("loading");
-
-  try {
-    await addDoc(collection(db, "entries"), { src, tgt, srcLang, tgtLang, tag: tag || "未分類", note, createdAt: serverTimestamp() });
-    document.getElementById("srcText").value = "";
-    document.getElementById("tgtText").value = "";
-    document.getElementById("tagInput").value = "";
-    document.getElementById("noteInput").value = "";
-    ["srcPreview","tgtPreview"].forEach(id => { const el = document.getElementById(id); el.src=""; el.classList.remove('show'); });
-    document.getElementById("btnSrcPhoto").textContent = "📷 英語を撮影";
-    document.getElementById("btnSrcPhoto").classList.remove('done');
-    document.getElementById("btnTgtPhoto").textContent = "📷 日本語を撮影";
-    document.getElementById("btnTgtPhoto").classList.remove('done');
-    showToast("✓ 追加しました");
-  } catch(e) {
-    showToast("エラーが発生しました");
-    setSyncStatus("error");
-  }
-  btn.disabled = false;
+// ── JSON Restore ──
+window.handleJsonRestore = async function(file) {
+  if (!file) return;
+  if (!confirm(`バックアップJSONをFirebaseに復元しますか？\n既存のデータは削除されません（追加されます）。`)) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) { showToast("無効なJSONファイルです"); return; }
+      setSyncStatus("loading");
+      for (let i = 0; i < data.length; i += 499) {
+        const batch = writeBatch(db);
+        data.slice(i, i+499).forEach(item => {
+          const { id, createdAt, ...rest } = item;
+          batch.set(doc(collection(db, "entries")), { ...rest, createdAt: serverTimestamp() });
+        });
+        await batch.commit();
+      }
+      showToast(`✓ ${data.length} 件を復元しました`);
+    } catch(e) { showToast("復元に失敗しました"); console.error(e); }
+    document.getElementById('jsonInput').value = '';
+  };
+  reader.readAsText(file);
 };
 
-// ── Delete ──
-window.deleteEntry = async function(id) {
-  if (!confirm("このフレーズを削除しますか？")) return;
-  setSyncStatus("loading");
-  try {
-    await deleteDoc(doc(db, "entries", id));
-    showToast("削除しました");
-  } catch(e) {
-    showToast("削除に失敗しました");
-    setSyncStatus("error");
-  }
+// ── Export ──
+window.exportExcel = function() {
+  const data = entries.map(e => ({
+    source: e.src, target: e.tgt, context: e.context, title: e.title,
+    genre: e.genre, source_type: e.sourceType, ref_source: e.refSource,
+    memo: e.note, tag: e.tag,
+    created_at: e.createdAt?.toDate ? e.createdAt.toDate().toLocaleDateString('ja-JP') : ''
+  }));
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "TransMem");
+  XLSX.writeFile(wb, `transmem_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showToast("Excelをダウンロードしました");
 };
 
-window.copyText = function(text) {
-  navigator.clipboard.writeText(text).then(() => showToast("コピーしました"));
+window.exportCSV = function() {
+  const headers = ['source','target','context','title','genre','source_type','ref_source','memo','tag','created_at'];
+  const rows = entries.map(e => [
+    e.src, e.tgt, e.context, e.title, e.genre, e.sourceType, e.refSource, e.note, e.tag,
+    e.createdAt?.toDate ? e.createdAt.toDate().toLocaleDateString('ja-JP') : ''
+  ].map(v => `"${(v||'').replace(/"/g,'""')}"`).join(','));
+  const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `transmem_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  showToast("CSVをダウンロードしました");
 };
 
-function renderTags() {
-  const tags = ["すべて", ...new Set(entries.map(e => e.tag).filter(Boolean))];
-  document.getElementById("filterRow").innerHTML = tags.map(t =>
-    `<button class="tag-filter ${t === activeTag ? 'active' : ''}" onclick="setTag('${t}')">${t}</button>`
-  ).join("");
+window.exportJSON = function() {
+  const data = entries.map(e => ({
+    ...e,
+    createdAt: e.createdAt?.toDate ? e.createdAt.toDate().toISOString() : null
+  }));
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `transmem_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast("JSONバックアップをダウンロードしました");
+};
+
+// ── Data stats ──
+function updateDataStats() {
+  const total = entries.length;
+  const myCount = entries.filter(e => e.sourceType !== 'ref').length;
+  const refCount = entries.filter(e => e.sourceType === 'ref').length;
+  const genres = [...new Set(entries.map(e => e.genre).filter(Boolean))];
+  document.getElementById('dataStats').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;text-align:center">
+      <div><div style="font-size:24px;font-weight:700;color:var(--text)">${total}</div><div>総フレーズ数</div></div>
+      <div><div style="font-size:24px;font-weight:700;color:var(--accent)">${myCount}</div><div>自分の訳</div></div>
+      <div><div style="font-size:24px;font-weight:700;color:var(--warning)">${refCount}</div><div>参照事例</div></div>
+    </div>
+    <div style="margin-top:10px;font-size:12px">ジャンル: ${genres.length > 0 ? genres.join('・') : 'なし'}</div>
+  `;
 }
 
-window.setTag = function(tag) { activeTag = tag; renderTags(); renderList(); };
-
-window.renderList = function() {
-  const q = document.getElementById("searchInput").value.trim().toLowerCase();
-  let filtered = entries;
-  if (activeTag !== "すべて") filtered = filtered.filter(e => e.tag === activeTag);
-  if (q) filtered = filtered.filter(e =>
-    e.src?.toLowerCase().includes(q) || e.tgt?.toLowerCase().includes(q) ||
-    e.tag?.toLowerCase().includes(q) || e.note?.toLowerCase().includes(q)
-  );
-
-  document.getElementById("stats").textContent = `${filtered.length} 件`;
-
-  const list = document.getElementById("entryList");
-  if (filtered.length === 0) {
-    list.innerHTML = `<div class="empty"><div class="empty-icon">📭</div>
-      <h3>${entries.length === 0 ? 'まだフレーズがありません' : '該当なし'}</h3>
-      <p>${entries.length === 0 ? '上のフォームから追加するかExcelをインポートしましょう' : '別のキーワードで試してください'}</p></div>`;
-    return;
-  }
-
-  function hl(text) {
-    if (!q) return text || "";
-    return (text || "").replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), m => `<mark>${m}</mark>`);
-  }
-
-  list.innerHTML = filtered.map(e => {
-    const date = e.createdAt?.toDate ? e.createdAt.toDate().toLocaleDateString('ja-JP') : "";
-    return `<div class="entry-card">
-      <div class="entry-langs">
-        <span class="lang-badge">${e.srcLang||'EN'}</span>
-        <span class="entry-text">${hl(e.src)}</span>
-        <button class="btn-icon copy" onclick="copyText('${(e.src||'').replace(/'/g,"\\'").replace(/\n/g,' ')}')">📋</button>
-      </div>
-      <div class="entry-divider"></div>
-      <div class="entry-translation">
-        <span class="lang-badge tl">${e.tgtLang||'JA'}</span>
-        <span class="entry-text">${hl(e.tgt)}</span>
-        <button class="btn-icon copy" onclick="copyText('${(e.tgt||'').replace(/'/g,"\\'").replace(/\n/g,' ')}')">📋</button>
-      </div>
-      ${e.note ? `<div class="entry-note">💬 ${hl(e.note)}</div>` : ''}
-      <div class="entry-footer">
-        <div style="display:flex;gap:6px;align-items:center">
-          <span class="entry-tag">${e.tag||'未分類'}</span>
-          <span class="entry-date">${date}</span>
-        </div>
-        <button class="btn-icon" onclick="deleteEntry('${e.id}')" title="削除">🗑️</button>
-      </div>
-    </div>`;
-  }).join("");
-};
-
+// ── Toast ──
 function showToast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg;
   t.classList.add("show");
   setTimeout(() => t.classList.remove("show"), 2500);
 }
+
+// Make functions global
+window.showToast = showToast;
 
 document.addEventListener("keydown", e => {
   if (e.key === "Enter" && (e.target.id === "srcText" || e.target.id === "tgtText")) addEntry();
