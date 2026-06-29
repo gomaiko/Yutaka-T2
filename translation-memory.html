@@ -28,7 +28,6 @@
     min-height: 100vh;
   }
 
-  /* Header */
   header {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
@@ -41,45 +40,18 @@
     z-index: 100;
   }
 
-  .logo {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: var(--text);
-  }
-
+  .logo { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; color: var(--text); }
   .logo span { color: var(--accent); }
 
-  .sync-status {
-    font-size: 12px;
-    color: var(--sub);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .sync-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #ccc;
-    transition: background 0.3s;
-  }
-
+  .sync-status { font-size: 12px; color: var(--sub); display: flex; align-items: center; gap: 5px; }
+  .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; transition: background 0.3s; }
   .sync-dot.ok { background: var(--success); }
   .sync-dot.loading { background: #f0a500; animation: pulse 1s infinite; }
   .sync-dot.error { background: var(--danger); }
-
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  /* Main layout */
-  .container {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 20px 16px 80px;
-  }
+  .container { max-width: 680px; margin: 0 auto; padding: 20px 16px 80px; }
 
-  /* Add form */
   .add-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -89,284 +61,148 @@
     box-shadow: var(--shadow);
   }
 
-  .add-card h2 {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--sub);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 12px;
-  }
+  .add-card h2 { font-size: 13px; font-weight: 600; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
 
-  .field-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
+  /* OCR section */
+  .ocr-section {
+    background: var(--accent-light);
+    border: 1px dashed var(--accent);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 14px;
   }
-
-  @media (max-width: 480px) {
-    .field-row { grid-template-columns: 1fr; }
+  .ocr-section h3 { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .ocr-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px) { .ocr-row { grid-template-columns: 1fr; } }
+  .ocr-box { display: flex; flex-direction: column; gap: 6px; }
+  .ocr-box label { font-size: 11px; font-weight: 600; color: var(--sub); text-transform: uppercase; }
+  .ocr-upload-btn {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px; border: 1px solid var(--accent); border-radius: 7px;
+    background: var(--surface); color: var(--accent); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: background 0.15s;
   }
+  .ocr-upload-btn:hover { background: var(--accent-light); }
+  .ocr-upload-btn.done { border-color: var(--success); color: var(--success); background: #edf7f1; }
+  .ocr-upload-btn.loading { opacity: 0.6; cursor: not-allowed; }
+  .ocr-preview { width: 100%; max-height: 80px; object-fit: cover; border-radius: 5px; display: none; }
+  .ocr-preview.show { display: block; }
 
-  .field label {
-    display: block;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--sub);
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+  /* Excel import section */
+  .excel-section {
+    background: #f0faf4;
+    border: 1px dashed var(--success);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 14px;
   }
-
-  .field input, .field textarea, .field select {
-    width: 100%;
-    padding: 9px 12px;
+  .excel-section h3 { font-size: 12px; font-weight: 700; color: var(--success); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .excel-drop-area {
+    border: 2px dashed #a8d5b5;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--surface);
+  }
+  .excel-drop-area:hover, .excel-drop-area.dragover { background: #edf7f1; border-color: var(--success); }
+  .excel-drop-area p { font-size: 13px; color: var(--sub); margin-top: 6px; }
+  .excel-drop-area .icon { font-size: 28px; }
+  .excel-drop-area strong { font-size: 14px; color: var(--text); }
+  .import-preview {
+    margin-top: 10px;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 7px;
-    font-size: 14px;
-    font-family: inherit;
-    background: var(--bg);
-    color: var(--text);
-    transition: border-color 0.15s;
-    outline: none;
-    resize: none;
+    overflow: hidden;
+    display: none;
   }
-
-  .field input:focus, .field textarea:focus, .field select:focus {
-    border-color: var(--accent);
-    background: #fff;
+  .import-preview.show { display: block; }
+  .import-preview-header {
+    padding: 8px 12px;
+    background: #edf7f1;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--success);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
+  .import-preview table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .import-preview td { padding: 6px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .import-preview tr:last-child td { border-bottom: none; }
+  .import-preview td:first-child { color: var(--sub); width: 50%; }
+  .btn-import {
+    width: 100%; padding: 10px; background: var(--success); color: #fff;
+    border: none; border-radius: 7px; font-size: 13px; font-weight: 600;
+    cursor: pointer; margin-top: 8px; transition: opacity 0.15s;
+  }
+  .btn-import:hover { opacity: 0.88; }
+  .btn-import:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .note-field { grid-column: 1 / -1; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+  .field label { display: block; font-size: 11px; font-weight: 600; color: var(--sub); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .field input, .field select {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 7px;
+    font-size: 14px; font-family: inherit; background: var(--bg); color: var(--text);
+    transition: border-color 0.15s; outline: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--accent); background: #fff; }
 
   .btn-add {
-    width: 100%;
-    padding: 11px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 4px;
-    transition: opacity 0.15s;
+    width: 100%; padding: 11px; background: var(--accent); color: #fff;
+    border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; margin-top: 4px; transition: opacity 0.15s;
   }
-
   .btn-add:hover { opacity: 0.88; }
   .btn-add:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* Search */
-  .search-bar {
-    position: relative;
-    margin-bottom: 16px;
-  }
-
+  .search-bar { position: relative; margin-bottom: 16px; }
   .search-bar input {
-    width: 100%;
-    padding: 11px 16px 11px 40px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 14px;
-    background: var(--surface);
-    color: var(--text);
-    outline: none;
-    box-shadow: var(--shadow);
-    transition: border-color 0.15s;
+    width: 100%; padding: 11px 16px 11px 40px; border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 14px; background: var(--surface);
+    color: var(--text); outline: none; box-shadow: var(--shadow); transition: border-color 0.15s;
   }
-
   .search-bar input:focus { border-color: var(--accent); }
+  .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--sub); font-size: 16px; }
 
-  .search-icon {
-    position: absolute;
-    left: 13px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--sub);
-    font-size: 16px;
-  }
+  .filter-row { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tag-filter { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); font-size: 12px; cursor: pointer; background: var(--surface); color: var(--sub); transition: all 0.15s; }
+  .tag-filter.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
-  /* Filter tabs */
-  .filter-row {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
+  .stats { font-size: 12px; color: var(--sub); margin-bottom: 12px; }
 
-  .tag-filter {
-    padding: 5px 12px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    font-size: 12px;
-    cursor: pointer;
-    background: var(--surface);
-    color: var(--sub);
-    transition: all 0.15s;
-  }
-
-  .tag-filter.active {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-  }
-
-  /* Stats */
-  .stats {
-    font-size: 12px;
-    color: var(--sub);
-    margin-bottom: 12px;
-  }
-
-  /* Entry list */
   .entry-list { display: flex; flex-direction: column; gap: 10px; }
-
-  .entry-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-    box-shadow: var(--shadow);
-    position: relative;
-  }
-
-  .entry-langs {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-
-  .lang-badge {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 4px;
-    background: var(--accent-light);
-    color: var(--accent);
-    min-width: 28px;
-    text-align: center;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .entry-text {
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 1.4;
-    color: var(--text);
-  }
-
-  .entry-divider {
-    width: 100%;
-    height: 1px;
-    background: var(--border);
-    margin: 8px 0;
-  }
-
-  .entry-translation {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .lang-badge.tl {
-    background: #edf7f1;
-    color: var(--success);
-  }
-
-  .entry-note {
-    font-size: 12px;
-    color: var(--sub);
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--border);
-    font-style: italic;
-  }
-
-  .entry-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  .entry-tag {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 12px;
-    background: var(--bg);
-    color: var(--sub);
-    border: 1px solid var(--border);
-  }
-
-  .entry-actions {
-    display: flex;
-    gap: 8px;
-  }
-
-  .btn-icon {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 15px;
-    color: var(--sub);
-    padding: 3px;
-    border-radius: 4px;
-    transition: color 0.15s, background 0.15s;
-  }
-
+  .entry-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+  .entry-langs { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .lang-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: var(--accent-light); color: var(--accent); min-width: 28px; text-align: center; flex-shrink: 0; margin-top: 2px; }
+  .entry-text { font-size: 15px; font-weight: 500; line-height: 1.4; color: var(--text); flex: 1; }
+  .entry-divider { width: 100%; height: 1px; background: var(--border); margin: 8px 0; }
+  .entry-translation { display: flex; align-items: flex-start; gap: 10px; }
+  .lang-badge.tl { background: #edf7f1; color: var(--success); }
+  .entry-note { font-size: 12px; color: var(--sub); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-style: italic; }
+  .entry-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .entry-tag { font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--bg); color: var(--sub); border: 1px solid var(--border); }
+  .entry-actions { display: flex; gap: 8px; }
+  .btn-icon { background: none; border: none; cursor: pointer; font-size: 15px; color: var(--sub); padding: 3px; border-radius: 4px; transition: color 0.15s, background 0.15s; }
   .btn-icon:hover { color: var(--danger); background: #fef0ee; }
   .btn-icon.copy:hover { color: var(--accent); background: var(--accent-light); }
+  .entry-date { font-size: 11px; color: var(--sub); }
 
-  .entry-date {
-    font-size: 11px;
-    color: var(--sub);
-  }
-
-  /* Empty state */
-  .empty {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--sub);
-  }
-
+  .empty { text-align: center; padding: 60px 20px; color: var(--sub); }
   .empty-icon { font-size: 40px; margin-bottom: 10px; }
   .empty h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
   .empty p { font-size: 13px; }
 
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: #1a1917;
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 13px;
-    opacity: 0;
-    transition: all 0.25s;
-    z-index: 200;
-    white-space: nowrap;
-  }
-
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1917; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 200; white-space: nowrap; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* Loading */
-  .loading-overlay {
-    text-align: center;
-    padding: 40px;
-    color: var(--sub);
-    font-size: 14px;
-  }
+  .loading-overlay { text-align: center; padding: 40px; color: var(--sub); font-size: 14px; }
 
-  mark {
-    background: #fff3a3;
-    border-radius: 2px;
-  }
+  mark { background: #fff3a3; border-radius: 2px; }
+  input[type="file"] { display: none; }
 </style>
 </head>
 <body>
@@ -381,16 +217,61 @@
 
 <div class="container">
 
-  <!-- Add form -->
   <div class="add-card">
     <h2>フレーズを追加</h2>
+
+    <!-- Photo OCR -->
+    <div class="ocr-section">
+      <h3>📷 写真から文字起こし</h3>
+      <div class="ocr-row">
+        <div class="ocr-box">
+          <label>英語の写真</label>
+          <button class="ocr-upload-btn" id="btnSrcPhoto" onclick="document.getElementById('srcPhotoInput').click()">📷 英語を撮影</button>
+          <input type="file" id="srcPhotoInput" accept="image/*" capture="environment" onchange="ocrPhoto(this, 'src')" />
+          <img class="ocr-preview" id="srcPreview" />
+        </div>
+        <div class="ocr-box">
+          <label>日本語の写真</label>
+          <button class="ocr-upload-btn" id="btnTgtPhoto" onclick="document.getElementById('tgtPhotoInput').click()">📷 日本語を撮影</button>
+          <input type="file" id="tgtPhotoInput" accept="image/*" capture="environment" onchange="ocrPhoto(this, 'tgt')" />
+          <img class="ocr-preview" id="tgtPreview" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Excel Import -->
+    <div class="excel-section">
+      <h3>📊 Excelから一括インポート</h3>
+      <div class="excel-drop-area" id="dropArea"
+        onclick="document.getElementById('excelInput').click()"
+        ondragover="event.preventDefault();this.classList.add('dragover')"
+        ondragleave="this.classList.remove('dragover')"
+        ondrop="handleDrop(event)">
+        <div class="icon">📂</div>
+        <strong>Excelファイルを選択またはドロップ</strong>
+        <p>A列：英語　B列：日本語</p>
+      </div>
+      <input type="file" id="excelInput" accept=".xlsx,.xls,.csv" onchange="handleExcelFile(this.files[0])" />
+      <div class="import-preview" id="importPreview">
+        <div class="import-preview-header">
+          <span id="importCount"></span>
+          <span style="color:var(--sub);font-weight:400">プレビュー（最初の3件）</span>
+        </div>
+        <table id="previewTable"></table>
+        <div style="padding:10px">
+          <button class="btn-import" id="importBtn" onclick="importEntries()">すべてインポートする</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manual input -->
     <div class="field-row">
       <div class="field">
-        <label>原文</label>
+        <label>原文（英語）</label>
         <input type="text" id="srcText" placeholder="例：How are you?" />
       </div>
       <div class="field">
-        <label>翻訳</label>
+        <label>翻訳（日本語）</label>
         <input type="text" id="tgtText" placeholder="例：お元気ですか？" />
       </div>
     </div>
@@ -431,7 +312,7 @@
         <label>タグ（任意）</label>
         <input type="text" id="tagInput" placeholder="例：ビジネス、旅行..." />
       </div>
-      <div class="field note-field">
+      <div class="field">
         <label>メモ（任意）</label>
         <input type="text" id="noteInput" placeholder="使い方や文脈など..." />
       </div>
@@ -445,13 +326,9 @@
     <input type="text" id="searchInput" placeholder="原文・翻訳・タグで検索..." oninput="renderList()" />
   </div>
 
-  <!-- Filter tags -->
   <div class="filter-row" id="filterRow"></div>
-
-  <!-- Stats -->
   <div class="stats" id="stats"></div>
 
-  <!-- List -->
   <div class="entry-list" id="entryList">
     <div class="loading-overlay">読み込み中...</div>
   </div>
@@ -460,10 +337,10 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp }
+import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, writeBatch }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -475,11 +352,14 @@ const firebaseConfig = {
   appId: "1:596752565912:web:132718f0338fc2f621b2ed"
 };
 
+const ANTHROPIC_KEY = "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";
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let entries = [];
 let activeTag = "すべて";
+let pendingImport = [];
 
 const syncDot = document.getElementById("syncDot");
 const syncText = document.getElementById("syncText");
@@ -489,7 +369,6 @@ function setSyncStatus(state) {
   syncText.textContent = state === "ok" ? "同期済み" : state === "loading" ? "同期中..." : "オフライン";
 }
 
-// Realtime listener
 setSyncStatus("loading");
 const q = query(collection(db, "entries"), orderBy("createdAt", "desc"));
 onSnapshot(q, (snapshot) => {
@@ -502,7 +381,163 @@ onSnapshot(q, (snapshot) => {
   console.error(err);
 });
 
-// Add entry
+// ── OCR ──
+window.ocrPhoto = async function(input, side) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const btnId = side === 'src' ? 'btnSrcPhoto' : 'btnTgtPhoto';
+  const previewId = side === 'src' ? 'srcPreview' : 'tgtPreview';
+  const btn = document.getElementById(btnId);
+  const preview = document.getElementById(previewId);
+
+  const reader = new FileReader();
+  reader.onload = (e) => { preview.src = e.target.result; preview.classList.add('show'); };
+  reader.readAsDataURL(file);
+
+  btn.textContent = "⏳ 読み取り中...";
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  try {
+    const base64 = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result.split(",")[1]);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+
+    const lang = side === 'src' ? '英語' : '日本語';
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_KEY,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        messages: [{
+          role: "user",
+          content: [
+            { type: "image", source: { type: "base64", media_type: file.type, data: base64 } },
+            { type: "text", text: `この画像に写っている${lang}のテキストをそのまま文字起こししてください。テキストのみを返してください。説明や前置きは不要です。` }
+          ]
+        }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text?.trim() || "";
+
+    if (text) {
+      document.getElementById(side === 'src' ? 'srcText' : 'tgtText').value = text;
+      btn.textContent = "✓ 読み取り完了";
+      btn.classList.remove('loading');
+      btn.classList.add('done');
+      btn.disabled = false;
+      showToast(`文字起こし完了！`);
+    } else {
+      throw new Error("テキストが見つかりませんでした");
+    }
+  } catch (e) {
+    console.error(e);
+    btn.textContent = "❌ 失敗 - 再試行";
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    showToast("文字起こしに失敗しました");
+  }
+  input.value = "";
+};
+
+// ── Excel Import ──
+window.handleDrop = function(e) {
+  e.preventDefault();
+  document.getElementById('dropArea').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) handleExcelFile(file);
+};
+
+window.handleExcelFile = function(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const workbook = XLSX.read(e.target.result, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+      pendingImport = rows
+        .filter(row => row[0] && row[1])
+        .map(row => ({
+          src: String(row[0]).trim(),
+          tgt: String(row[1]).trim(),
+          srcLang: "EN",
+          tgtLang: "JA",
+          tag: "インポート",
+          note: ""
+        }));
+
+      if (pendingImport.length === 0) {
+        showToast("有効なデータが見つかりませんでした");
+        return;
+      }
+
+      // Show preview
+      document.getElementById('importCount').textContent = `${pendingImport.length} 件のフレーズを検出`;
+      const preview3 = pendingImport.slice(0, 3);
+      document.getElementById('previewTable').innerHTML = preview3.map(r =>
+        `<tr><td>${r.src}</td><td>${r.tgt}</td></tr>`
+      ).join('');
+      document.getElementById('importPreview').classList.add('show');
+      document.getElementById('excelInput').value = '';
+    } catch(err) {
+      showToast("ファイルの読み込みに失敗しました");
+      console.error(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+};
+
+window.importEntries = async function() {
+  if (pendingImport.length === 0) return;
+  const btn = document.getElementById('importBtn');
+  btn.disabled = true;
+  btn.textContent = "インポート中...";
+  setSyncStatus("loading");
+
+  try {
+    // Firestore batch write (max 500 per batch)
+    const chunks = [];
+    for (let i = 0; i < pendingImport.length; i += 499) {
+      chunks.push(pendingImport.slice(i, i + 499));
+    }
+
+    for (const chunk of chunks) {
+      const batch = writeBatch(db);
+      chunk.forEach(item => {
+        const ref = doc(collection(db, "entries"));
+        batch.set(ref, { ...item, createdAt: serverTimestamp() });
+      });
+      await batch.commit();
+    }
+
+    showToast(`✓ ${pendingImport.length} 件をインポートしました`);
+    pendingImport = [];
+    document.getElementById('importPreview').classList.remove('show');
+  } catch(e) {
+    console.error(e);
+    showToast("インポートに失敗しました");
+    setSyncStatus("error");
+  }
+
+  btn.disabled = false;
+  btn.textContent = "すべてインポートする";
+};
+
+// ── Add single entry ──
 window.addEntry = async function() {
   const src = document.getElementById("srcText").value.trim();
   const tgt = document.getElementById("tgtText").value.trim();
@@ -518,16 +553,16 @@ window.addEntry = async function() {
   setSyncStatus("loading");
 
   try {
-    await addDoc(collection(db, "entries"), {
-      src, tgt, srcLang, tgtLang,
-      tag: tag || "未分類",
-      note,
-      createdAt: serverTimestamp()
-    });
+    await addDoc(collection(db, "entries"), { src, tgt, srcLang, tgtLang, tag: tag || "未分類", note, createdAt: serverTimestamp() });
     document.getElementById("srcText").value = "";
     document.getElementById("tgtText").value = "";
     document.getElementById("tagInput").value = "";
     document.getElementById("noteInput").value = "";
+    ["srcPreview","tgtPreview"].forEach(id => { const el = document.getElementById(id); el.src=""; el.classList.remove('show'); });
+    document.getElementById("btnSrcPhoto").textContent = "📷 英語を撮影";
+    document.getElementById("btnSrcPhoto").classList.remove('done');
+    document.getElementById("btnTgtPhoto").textContent = "📷 日本語を撮影";
+    document.getElementById("btnTgtPhoto").classList.remove('done');
     showToast("✓ 追加しました");
   } catch(e) {
     showToast("エラーが発生しました");
@@ -536,7 +571,7 @@ window.addEntry = async function() {
   btn.disabled = false;
 };
 
-// Delete entry
+// ── Delete ──
 window.deleteEntry = async function(id) {
   if (!confirm("このフレーズを削除しますか？")) return;
   setSyncStatus("loading");
@@ -549,104 +584,78 @@ window.deleteEntry = async function(id) {
   }
 };
 
-// Copy
 window.copyText = function(text) {
   navigator.clipboard.writeText(text).then(() => showToast("コピーしました"));
 };
 
-// Render tags
 function renderTags() {
   const tags = ["すべて", ...new Set(entries.map(e => e.tag).filter(Boolean))];
-  const row = document.getElementById("filterRow");
-  row.innerHTML = tags.map(t =>
+  document.getElementById("filterRow").innerHTML = tags.map(t =>
     `<button class="tag-filter ${t === activeTag ? 'active' : ''}" onclick="setTag('${t}')">${t}</button>`
   ).join("");
 }
 
-window.setTag = function(tag) {
-  activeTag = tag;
-  renderTags();
-  renderList();
-};
+window.setTag = function(tag) { activeTag = tag; renderTags(); renderList(); };
 
-// Render list
 window.renderList = function() {
   const q = document.getElementById("searchInput").value.trim().toLowerCase();
   let filtered = entries;
+  if (activeTag !== "すべて") filtered = filtered.filter(e => e.tag === activeTag);
+  if (q) filtered = filtered.filter(e =>
+    e.src?.toLowerCase().includes(q) || e.tgt?.toLowerCase().includes(q) ||
+    e.tag?.toLowerCase().includes(q) || e.note?.toLowerCase().includes(q)
+  );
 
-  if (activeTag !== "すべて") {
-    filtered = filtered.filter(e => e.tag === activeTag);
-  }
-
-  if (q) {
-    filtered = filtered.filter(e =>
-      e.src?.toLowerCase().includes(q) ||
-      e.tgt?.toLowerCase().includes(q) ||
-      e.tag?.toLowerCase().includes(q) ||
-      e.note?.toLowerCase().includes(q)
-    );
-  }
-
-  const stats = document.getElementById("stats");
-  stats.textContent = `${filtered.length} 件`;
+  document.getElementById("stats").textContent = `${filtered.length} 件`;
 
   const list = document.getElementById("entryList");
   if (filtered.length === 0) {
-    list.innerHTML = `<div class="empty">
-      <div class="empty-icon">📭</div>
+    list.innerHTML = `<div class="empty"><div class="empty-icon">📭</div>
       <h3>${entries.length === 0 ? 'まだフレーズがありません' : '該当なし'}</h3>
-      <p>${entries.length === 0 ? '上のフォームから最初のフレーズを追加しましょう' : '別のキーワードで試してください'}</p>
-    </div>`;
+      <p>${entries.length === 0 ? '上のフォームから追加するかExcelをインポートしましょう' : '別のキーワードで試してください'}</p></div>`;
     return;
   }
 
   function hl(text) {
     if (!q) return text || "";
-    return (text || "").replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'),
-      m => `<mark>${m}</mark>`);
+    return (text || "").replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), m => `<mark>${m}</mark>`);
   }
 
   list.innerHTML = filtered.map(e => {
     const date = e.createdAt?.toDate ? e.createdAt.toDate().toLocaleDateString('ja-JP') : "";
     return `<div class="entry-card">
       <div class="entry-langs">
-        <span class="lang-badge">${e.srcLang || 'EN'}</span>
+        <span class="lang-badge">${e.srcLang||'EN'}</span>
         <span class="entry-text">${hl(e.src)}</span>
-        <button class="btn-icon copy" onclick="copyText('${(e.src||'').replace(/'/g,"\\'")}')">📋</button>
+        <button class="btn-icon copy" onclick="copyText('${(e.src||'').replace(/'/g,"\\'").replace(/\n/g,' ')}')">📋</button>
       </div>
       <div class="entry-divider"></div>
       <div class="entry-translation">
-        <span class="lang-badge tl">${e.tgtLang || 'JA'}</span>
+        <span class="lang-badge tl">${e.tgtLang||'JA'}</span>
         <span class="entry-text">${hl(e.tgt)}</span>
-        <button class="btn-icon copy" onclick="copyText('${(e.tgt||'').replace(/'/g,"\\'")}')">📋</button>
+        <button class="btn-icon copy" onclick="copyText('${(e.tgt||'').replace(/'/g,"\\'").replace(/\n/g,' ')}')">📋</button>
       </div>
       ${e.note ? `<div class="entry-note">💬 ${hl(e.note)}</div>` : ''}
       <div class="entry-footer">
         <div style="display:flex;gap:6px;align-items:center">
-          <span class="entry-tag">${e.tag || '未分類'}</span>
+          <span class="entry-tag">${e.tag||'未分類'}</span>
           <span class="entry-date">${date}</span>
         </div>
-        <div class="entry-actions">
-          <button class="btn-icon" onclick="deleteEntry('${e.id}')" title="削除">🗑️</button>
-        </div>
+        <button class="btn-icon" onclick="deleteEntry('${e.id}')" title="削除">🗑️</button>
       </div>
     </div>`;
   }).join("");
 };
 
-// Toast
 function showToast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg;
   t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2000);
+  setTimeout(() => t.classList.remove("show"), 2500);
 }
 
-// Enter key to add
 document.addEventListener("keydown", e => {
-  if (e.key === "Enter" && (e.target.id === "srcText" || e.target.id === "tgtText")) {
-    addEntry();
-  }
+  if (e.key === "Enter" && (e.target.id === "srcText" || e.target.id === "tgtText")) addEntry();
 });
 </script>
 </body>
